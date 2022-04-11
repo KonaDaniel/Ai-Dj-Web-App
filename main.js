@@ -13,6 +13,7 @@ function setup() {
     canvas.center();
 
     video = createCapture(VIDEO);
+    video.size(650, 540);
     video.hide();
 
     poseNet = ml5.poseNet(video, modelLoaded);
@@ -25,14 +26,40 @@ function draw() {
     fill("red");
     stroke("black");
 
-    if (scoreLeftWrist > 0.2) {
-        circle(leftWristX, leftWristY, 30);
-        InNumberleftWristY = Number(leftWristY);
-        remove_decimals = floor(InNumberleftWristY);
-        volume = remove_decimals / 500;
-        document.getElementById("volume").innerHTML = "Volume " + volume;
-        song.setVolume(volume);
+    circle(rightWristX, rightWristY, 30);
+
+    if (rightWristY > 0 && rightWristY <= 100) {
+        document.getElementById("speed").innerHTML = " Speed = 0.5x"
+        song.rate(0.5);
     }
+    else if (rightWristY > 100 && rightWristY <= 200) {
+        document.getElementById("speed").innerHTML = " Speed = 1x"
+        song.rate(1);
+    }
+    else if (rightWristY > 200 && rightWristY <= 300) {
+        document.getElementById("speed").innerHTML = " Speed = 1.5x"
+        song.rate(1.5);
+    }
+    else if (rightWristY > 300 && rightWristY <= 400) {
+        document.getElementById("speed").innerHTML = " Speed = 2x"
+        song.rate(2);
+    }
+    else {
+        document.getElementById("speed").innerHTML = " Speed = 2.5x"
+        song.rate(2.5);
+    }
+
+    fill("blue");
+    stroke("black");
+
+    //if (scoreLeftWrist > 0.2) {
+    circle(leftWristX, leftWristY, 30);
+    InNumberleftWristY = Number(leftWristY);
+    remove_decimals = floor(InNumberleftWristY);
+    volume = remove_decimals / 500;
+    document.getElementById("volume").innerHTML = "Volume " + volume;
+    song.setVolume(volume);
+    //}
 }
 
 function play() {
@@ -51,7 +78,7 @@ function gotPoses(results) {
         scoreLeftWrist = results[0].pose.keypoints[9].score;
 
         leftWristX = results[0].pose.leftWrist.x;
-        lefttWristY = results[0].pose.leftWrist.y;
+        leftWristY = results[0].pose.leftWrist.y;
         rightWristX = results[0].pose.rightWrist.x;
         rightWristY = results[0].pose.rightWrist.y;
 
